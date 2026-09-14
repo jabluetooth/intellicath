@@ -149,7 +149,7 @@ def save_data_to_firestore(data):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("landing.html")
 
 
 @app.route("/predict-post", methods=["POST"])
