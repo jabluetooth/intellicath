@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intellicath</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ────────────────────────────────────────────────────────────────────────
+   INTELLICATH — marketing/landing page
+   Single light theme, deliberately: the product itself (public/index.html)
+   is a light-only clinical dashboard — a default dark mode would break
+   continuity with the thing this page is selling. Colors are still all
+   explicit tokens declared on :root so the page holds on any host ground.
+   ──────────────────────────────────────────────────────────────────────── */
+
+:root {
+    --bg:          #f4f1eb;
+    --surface:     #faf8f4;
+    --surface-2:   #eeeade;
+    --ink:         #111111;
+    --ink-2:       #4a4944;
+    --ink-3:       #6e6b62;
+    --rule:        #d8d1c0;
+    --rule-strong: #111111;
+    --accent:      #00615c;
+    --accent-ink:  #ffffff;
+    --accent-soft: #e3efec;
+    --warn:        #a8590a;
+    --warn-soft:   #fbeee0;
+    --crit:        #8f1c1c;
+    --mono: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
+    --sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --header-h: 64px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--ink-2);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    padding-inline: clamp(20px, 5vw, 64px);
+}
+
+section[id] { scroll-margin-top: var(--header-h); }
+
+a { color: inherit; }
+code, .mono { font-family: var(--mono); }
+img { max-width: 100%; }
+
+::selection { background: var(--accent); color: #fff; }
+
+.eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+
+h1, h2, h3, h4 { font-weight: 400; color: var(--ink); text-wrap: balance; }
+
+h2.section-title {
+    font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    max-width: 20ch;
+}
+
+.section-intro {
+    font-size: 15.5px;
+    color: var(--ink-2);
+    max-width: 56ch;
+    margin-top: 14px;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ─── Shell / bands ─────────────────────────────────────────────────── */
+.shell { max-width: 1180px; margin-inline: auto; }
+.band { padding-block: clamp(56px, 9vw, 104px); border-bottom: 1px solid var(--rule); }
+.band.shade { background: var(--surface); margin-inline: calc(-1 * clamp(20px, 5vw, 64px)); padding-inline: clamp(20px, 5vw, 64px); }
+.band.tight { padding-block: clamp(40px, 6vw, 64px); }
+.band.last { border-bottom: none; }
+
+/* ─── Header ────────────────────────────────────────────────────────── */
+header.site {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+    margin-inline: calc(-1 * clamp(20px, 5vw, 64px));
+    padding-inline: clamp(20px, 5vw, 64px);
+    background: rgba(244, 241, 235, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+}
+
+.wordmark {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.wordmark .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: blink 2.4s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+nav.links {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2vw, 28px);
+}
+
+nav.links a.nav-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+nav.links a.nav-link:hover,
+nav.links a.nav-link.active { color: var(--ink); border-color: var(--accent); }
+
+nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    padding: 9px 14px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-cta:hover { background: var(--ink); color: var(--surface); }
+.nav-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#navToggle { display: none; }
+.hide-mobile { display: flex; }
+
+/* ─── Buttons (shared) ──────────────────────────────────────────────── */
+.btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+
+.btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    padding: 14px 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btn-primary { background: var(--ink); color: var(--surface); border: 1.5px solid var(--ink); }
+.btn-primary:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--rule-strong); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+/* ─── Hero ──────────────────────────────────────────────────────────── */
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 380px);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+    padding-block: clamp(48px, 8vw, 88px);
+}
+
+.hero h1 {
+    font-size: clamp(2.3rem, 4.6vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    font-weight: 300;
+}
+.hero h1 em { font-style: normal; font-weight: 600; color: var(--accent); }
+
+.hero-sub { font-size: 17px; color: var(--ink-2); max-width: 46ch; margin-top: 22px; }
+
+/* Instrument replica — a static echo of the real dashboard's priority
+   readout card, so the hero shows the actual product language instead of
+   a generic illustration. */
+.instrument {
+    border: 1.5px solid var(--ink);
+    background: var(--surface);
+}
+.instrument-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--rule);
+}
+.instrument-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+}
+.instrument-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warn);
+}
+.instrument-live .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--warn); animation: blink 2s ease-in-out infinite; }
+
+.instrument-body { padding: 24px 22px 22px; }
+.instrument-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); margin-bottom: 10px; }
+.instrument-num { font-family: var(--mono); font-size: 58px; font-weight: 700; line-height: 0.9; letter-spacing: -1px; color: var(--warn); }
+.instrument-unit { font-size: 13px; color: var(--ink-2); margin-top: 8px; margin-bottom: 20px; }
+
+.gauge-meta { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 6px; }
+.gauge-track { height: 6px; background: var(--rule); width: 100%; }
+.gauge-fill { height: 100%; width: 62%; background: var(--warn); }
+
+.instrument-foot {
+    padding: 12px 18px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+}
+
+/* ─── Problem strip ─────────────────────────────────────────────────── */
+.problem-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+    margin-top: 8px;
+}
+.problem-lede {
+    font-family: var(--mono);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.5;
+    border-left: 2px solid var(--accent);
+    padding-left: 22px;
+}
+.problem-body p + p { margin-top: 14px; }
+.problem-body p { max-width: 54ch; }
+
+/* ─── How it works — signal flow ────────────────────────────────────── */
+.flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+.flow-node {
+    flex: 1 1 200px;
+    padding: 22px 20px;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    border-left: 1.5px solid var(--ink);
+    position: relative;
+}
+.flow-node:last-child { border-right: 1.5px solid var(--ink); }
+.flow-step { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 10px; }
+.flow-node h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+.flow-node p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+.flow-part { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 10px; color: var(--ink-3); background: var(--surface-2); padding: 3px 7px; }
+
+/* ─── Features bento ────────────────────────────────────────────────── */
+.bento {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+    margin-top: 40px;
+}
+.bento-item { background: var(--surface); padding: 30px 30px; }
+.bento-item.primary { padding: 36px 34px; }
+.bento-item h3 { font-size: clamp(1.05rem, 1.6vw, 1.3rem); font-weight: 500; margin-bottom: 12px; }
+.bento-item p { font-size: 14px; color: var(--ink-2); max-width: 46ch; }
+.bento-item .mono-tag { display: inline-block; margin-top: 14px; font-family: var(--mono); font-size: 10px; color: var(--accent); }
+
+.bento-sub { grid-column: span 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: var(--ink); }
+.bento-sub .bento-item { padding: 26px 26px; }
+.bento-sub h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.bento-sub p { font-size: 13px; }
+
+/* ─── Engineering / Security citation lists ─────────────────────────── */
+.cite-list { margin-top: 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; }
+.cite-item { padding-block: 22px; border-top: 1px solid var(--rule); }
+.cite-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+.cite-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.cite-item p { font-size: 13.5px; color: var(--ink-2); }
+.cite-item code {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 7px;
+}
+
+/* ─── Stack manifest ─────────────────────────────────────────────────── */
+.manifest { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px 40px; }
+.manifest-group .manifest-label { font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); margin-bottom: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+.manifest-group ul { list-style: none; }
+.manifest-group li {
+    font-size: 13.5px;
+    color: var(--ink);
+    padding-block: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px dotted var(--rule);
+}
+.manifest-group li:last-child { border-bottom: none; }
+.manifest-group li span.tag { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); white-space: nowrap; }
+
+/* ─── Final CTA ─────────────────────────────────────────────────────── */
+.final-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding-block: clamp(48px, 8vw, 80px);
+}
+.final-cta h2 { font-size: clamp(1.8rem, 3.4vw, 2.8rem); font-weight: 300; letter-spacing: -0.01em; max-width: 14ch; }
+
+/* ─── Footer ─── two-panel format shared with Match/Insight: an accent
+   brand panel + a flat links panel, squared off to match this page's own
+   bordered/mono aesthetic rather than their rounded corners. */
+.site-footer { margin-top: 40px; padding-block: 0 48px; }
+
+.site-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 16px 24px;
+}
+
+.site-footer-brand {
+    flex: 1 1 260px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px 24px 20px;
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+
+.site-footer-wordmark {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.site-footer-wordmark .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-ink); flex-shrink: 0; }
+
+.site-footer-brand-foot { display: flex; flex-direction: column; gap: 12px; }
+
+.site-footer-tagline { font-size: 14px; font-weight: 500; opacity: 0.9; max-width: 34ch; margin: 0; }
+
+.site-footer-icon-row { display: flex; align-items: center; gap: 4px; }
+
+.site-footer-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--accent-ink);
+    opacity: 0.78;
+    transition: opacity 0.12s ease;
+}
+.site-footer-icon-link:hover { opacity: 1; }
+.site-footer-icon-link:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
+
+.site-footer-copyright { font-size: 11.5px; line-height: 1.6; opacity: 0.82; max-width: 42ch; margin: 0; }
+
+.site-footer-links {
+    flex: 0 1 220px;
+    padding: 22px 24px 20px;
+    border: 1.5px solid var(--ink);
+    background: var(--surface);
+}
+
+.site-footer-col-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    margin: 0 0 14px;
+}
+
+.site-footer-col-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.site-footer-col-list a {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: color 0.12s ease, border-color 0.12s ease;
+}
+.site-footer-col-list a:hover { color: var(--accent); border-color: var(--accent); }
+
+@media (max-width: 480px) {
+    .site-footer-brand { min-height: 0; }
+    .site-footer-links { flex-basis: 100%; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero .instrument { max-width: 380px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .cite-list { grid-template-columns: 1fr; }
+    .cite-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+    .bento { grid-template-columns: 1fr; }
+    .bento-sub { grid-column: span 1; grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+    .hide-mobile { display: none; }
+    #navToggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px; height: 34px;
+        border: 1.5px solid var(--ink);
+        background: transparent;
+        font-family: var(--mono);
+        font-size: 14px;
+        cursor: pointer;
+    }
+    #navToggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    nav.links.mobile-open {
+        display: flex;
+        position: fixed;
+        inset: var(--header-h) 0 auto 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        background: var(--surface);
+        border-bottom: 1.5px solid var(--ink);
+        padding: 8px clamp(20px, 5vw, 64px) 18px;
+    }
+    nav.links.mobile-open a.nav-link,
+    nav.links.mobile-open a.nav-cta { width: 100%; padding-block: 12px; border-bottom: 1px solid var(--rule); }
+    .flow-node { flex: 1 1 100%; border-right: 1.5px solid var(--ink) !important; }
+    .flow-node + .flow-node { border-top: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .wordmark .dot, .instrument-live .dot { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+    <a href="#top" class="wordmark"><span class="dot"></span> INTELLICATH</a>
+    <button id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">&#9776;</button>
+    <nav class="links hide-mobile" id="navLinks">
+        <a href="#top" class="nav-link" data-nav>Overview</a>
+        <a href="#how" class="nav-link" data-nav>How it works</a>
+        <a href="#features" class="nav-link" data-nav>What it does</a>
+        <a href="#engineering" class="nav-link" data-nav>Engineering</a>
+        <a href="#security" class="nav-link" data-nav>Security</a>
+        <a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer" class="nav-cta">Source ↗</a>
+    </nav>
+</header>
+
+<main class="shell">
+
+    <!-- ─── Hero ─── -->
+    <section id="top" class="band hero-band">
+        <div class="hero">
+            <div>
+                <div class="eyebrow">ESP32 · Load cell · Decision tree · Firestore</div>
+                <h1>A catheter bag<br>that <em>tells someone</em><br>before it's full.</h1>
+                <p class="hero-sub">INTELLICATH weighs the bag continuously with a load cell, predicts the minute it reaches capacity, and puts that number in front of a nurse before the bag has to do it for them.</p>
+                <div class="btn-row">
+                    <a href="index.html" class="btn btn-primary">Open the dashboard</a>
+                    <a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Read the source ↗</a>
+                </div>
+            </div>
+
+            <div class="instrument" aria-hidden="true">
+                <div class="instrument-head">
+                    <span class="instrument-tag">Example reading</span>
+                    <span class="instrument-live"><span class="dot"></span>Caution</span>
+                </div>
+                <div class="instrument-body">
+                    <div class="instrument-label">Time until bag full</div>
+                    <div class="instrument-num tabular">3</div>
+                    <div class="instrument-unit">3h 42m until full — plan to empty soon</div>
+                    <div class="gauge-meta"><span>Bag capacity</span><span>62%</span></div>
+                    <div class="gauge-track"><div class="gauge-fill"></div></div>
+                </div>
+                <div class="instrument-foot">Illustrative only — live values render on the dashboard.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Why this exists ─── -->
+    <section class="band shade">
+        <div class="eyebrow">Why this exists</div>
+        <div class="problem-grid">
+            <div class="problem-lede">A full catheter bag doesn't page anyone. Someone has to walk over, look, and remember to look again.</div>
+            <div class="problem-body">
+                <p>Catheter-associated urinary tract infections are one of the more preventable hospital-acquired complications, and a lot of the risk sits in the gap between checks — a bag that sat too full for too long, a blockage no one noticed until output stopped.</p>
+                <p>INTELLICATH replaces the walk-and-look with a number on a screen: a load cell under the bag, a small model that turns weight and flow into a countdown, and a dashboard that recolors before the situation does.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── How it works ─── -->
+    <section id="how" class="band">
+        <div class="eyebrow">How it works</div>
+        <h2 class="section-title">One reading, five hops, no polling from a nurse's station required.</h2>
+        <div class="flow">
+            <div class="flow-node">
+                <div class="flow-step">01 — SENSE</div>
+                <h4>Load cell weighs the bag</h4>
+                <p>An HX711 amplifier samples ten readings per loop under the catheter bag; weight converts directly to volume.</p>
+                <span class="flow-part">ARDUINOCODE.ino</span>
+            </div>
+            <div class="flow-node">
+                <div class="flow-step">02 — COMPUTE</div>
+                <h4>ESP32 derives the flow rate</h4>
+                <p>Flow is recalculated on a fixed 60-second window, not an unbounded elapsed time, so a quiet period doesn't distort the rate.</p>
+                <span class="flow-part">calculateUrineFlowRate()</span>
+            </div>
+            <div class="flow-node">
+                <div class="flow-step">03 — POST</div>
+                <h4>TLS-pinned upload</h4>
+                <p>The device validates the server's certificate against a hardcoded root CA, then posts with an API key and a device ID.</p>
+                <span class="flow-part">WiFiClientSecure</span>
+            </div>
+            <div class="flow-node">
+                <div class="flow-step">04 — VALIDATE</div>
+                <h4>Serverless function checks it</h4>
+                <p>The key, the rate limit, and the clinical bounds (0–800 mL bag volume, 0–100 mL/min flow) are all checked before anything is stored.</p>
+                <span class="flow-part">db.py</span>
+            </div>
+            <div class="flow-node">
+                <div class="flow-step">05 — PREDICT</div>
+                <h4>Decision tree, then dashboard</h4>
+                <p>A scikit-learn regressor turns remaining volume and flow rate into minutes-to-full; the dashboard renders the countdown and fires alerts.</p>
+                <span class="flow-part">decision_tree.pkl</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Features ─── -->
+    <section id="features" class="band shade">
+        <div class="eyebrow">What it does</div>
+        <h2 class="section-title">Built around two jobs — sense accurately, predict honestly.</h2>
+        <div class="bento">
+            <div class="bento-item primary">
+                <h3>Continuous weight sensing, not spot checks</h3>
+                <p>The load cell samples every loop of the device's firmware. Urine output and flow rate are measured directly from bag weight, not estimated from a nurse's last visual check.</p>
+                <span class="mono-tag">HX711 · 10-sample average</span>
+            </div>
+            <div class="bento-item primary">
+                <h3>A trained countdown, not a guess</h3>
+                <p>A decision tree regression model predicts minutes until the bag reaches 800 mL from remaining volume and current flow rate — retrained offline, hash-verified before it's ever loaded.</p>
+                <span class="mono-tag">scikit-learn · joblib</span>
+            </div>
+            <div class="bento-sub">
+                <div class="bento-item">
+                    <h4>Alerts you can tune</h4>
+                    <p>Warn threshold and refresh interval are editable per session and saved to <code>localStorage</code>, not hardcoded into the page.</p>
+                </div>
+                <div class="bento-item">
+                    <h4>Tells you when it's lying</h4>
+                    <p>If the last successful reading is more than 30 seconds old, the timestamp turns amber and counts up instead of quietly going stale.</p>
+                </div>
+                <div class="bento-item">
+                    <h4>Usable with a keyboard</h4>
+                    <p>Every alert toggle carries a visible focus ring, the sidebar announces its own expanded state, and toasts are built from real DOM nodes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Engineering ─── -->
+    <section id="engineering" class="band">
+        <div class="eyebrow">Engineering</div>
+        <h2 class="section-title">The parts that don't show up on the dashboard.</h2>
+        <div class="cite-list">
+            <div class="cite-item">
+                <h4>Hashes the model before it's allowed to run</h4>
+                <p>Loading a pickle is arbitrary code execution if the file was ever swapped. <code class="mono">get_model()</code> checks a SHA-256 of both <code class="mono">decision_tree.pkl</code> and <code class="mono">scaler.pkl</code> against env-stored hashes before <code class="mono">joblib.load()</code> touches either.</p>
+                <code>db.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>One validator, three callers</h4>
+                <p><code class="mono">api/predict.py</code>, <code class="mono">api/data.py</code>, and the local Flask app all import the same <code class="mono">validate_sensor_data</code> — type coercion plus clinical range bounds, instead of three copies quietly drifting apart.</p>
+                <code>db.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>Skips the write when nothing changed</h4>
+                <p><code class="mono">save_data_to_firestore</code> compares the incoming reading against the last stored document and drops the insert when volume, flow, and output are all within noise tolerance.</p>
+                <code>db.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>Pinned TLS on the sensor itself</h4>
+                <p>The ESP32 validates the server's certificate against a hardcoded ISRG Root X1 before it ever sends a reading — <code class="mono">WiFiClientSecure</code>, not a bare <code class="mono">HTTPClient</code> trusting whatever answers.</p>
+                <code>ARDUINOCODE.ino</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Security ─── -->
+    <section id="security" class="band shade">
+        <div class="eyebrow">Security</div>
+        <h2 class="section-title">Every hop between the sensor and the screen is checked.</h2>
+        <div class="cite-list">
+            <div class="cite-item">
+                <h4>Every request carries a key</h4>
+                <p><code class="mono">X-Api-Key</code> is checked on both API routes; the ESP32 attaches <code class="mono">X-Device-Id</code> alongside it so a stored reading is attributable to a specific unit.</p>
+                <code>db.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>Errors don't narrate the stack</h4>
+                <p>A failed request returns a flat "an internal error occurred." The real exception, with <code class="mono">exc_info=True</code>, goes to the server log — never to the client that triggered it.</p>
+                <code>app.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>Rate-limited per IP</h4>
+                <p><code class="mono">check_rate_limit</code> rejects a second request from the same address inside a one-second window — a stopgap against a flooded endpoint filling Firestore with garbage.</p>
+                <code>db.py</code>
+            </div>
+            <div class="cite-item">
+                <h4>No HTML in, HTML out</h4>
+                <p>The toast notification system builds every node with <code class="mono">createElement</code> and <code class="mono">textContent</code>. Nothing a server response contains is ever parsed as markup.</p>
+                <code>index.html</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Stack manifest ─── -->
+    <section class="band">
+        <div class="eyebrow">Stack</div>
+        <h2 class="section-title">Bill of materials.</h2>
+        <div class="manifest">
+            <div class="manifest-group">
+                <div class="manifest-label">Hardware</div>
+                <ul>
+                    <li>ESP32 dev board <span class="tag">WiFi + TLS</span></li>
+                    <li>HX711 load cell amp <span class="tag">DT/SCK</span></li>
+                    <li>On-chip EEPROM <span class="tag">state persistence</span></li>
+                </ul>
+            </div>
+            <div class="manifest-group">
+                <div class="manifest-label">Backend</div>
+                <ul>
+                    <li>Python 3.9 <span class="tag">Flask, local</span></li>
+                    <li>Vercel Functions <span class="tag">@vercel/python</span></li>
+                    <li>google-cloud-firestore <span class="tag">SDK</span></li>
+                </ul>
+            </div>
+            <div class="manifest-group">
+                <div class="manifest-label">Model</div>
+                <ul>
+                    <li>Decision tree regression <span class="tag">scikit-learn</span></li>
+                    <li>Feature scaler <span class="tag">joblib</span></li>
+                    <li>Inputs <span class="tag">volume + flow</span></li>
+                </ul>
+            </div>
+            <div class="manifest-group">
+                <div class="manifest-label">Frontend</div>
+                <ul>
+                    <li>Vanilla HTML / CSS / JS <span class="tag">no framework</span></li>
+                    <li>Space Mono + DM Sans <span class="tag">type system</span></li>
+                    <li>Firebase Firestore <span class="tag">live store</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── Final CTA ─── -->
+    <section class="band last">
+        <div class="final-cta">
+            <h2>See the number update.</h2>
+            <div class="btn-row" style="margin-top:0;">
+                <a href="index.html" class="btn btn-primary">Open the dashboard</a>
+                <a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Read the source ↗</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="site-footer-inner shell">
+        <div class="site-footer-brand">
+            <span class="site-footer-wordmark"><span class="dot"></span>INTELLICATH</span>
+
+            <div class="site-footer-brand-foot">
+                <p class="site-footer-tagline">Predicts when a catheter bag is full, before it has to say so itself.</p>
+
+                <div class="site-footer-icon-row">
+                    <a href="https://github.com/jabluetooth" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="site-footer-icon-link">
+                        <svg aria-hidden="true" viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                    </a>
+                    <a href="https://ph.linkedin.com/in/filheinzrelatorre" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="site-footer-icon-link">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/fil.tower" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="site-footer-icon-link">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+                    </a>
+                    <a href="https://www.filheinzrelatorre.com/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio" class="site-footer-icon-link">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.4 3.6 5.4 3.6 9s-1.2 6.6-3.6 9c-2.4-2.4-3.6-5.4-3.6-9s1.2-6.6 3.6-9Z"/></svg>
+                    </a>
+                </div>
+
+                <p class="site-footer-copyright">&copy; <span id="footYear"></span> Intellicath by Fil Heinz Re La Torre — a coursework/portfolio prototype, not a certified medical device.</p>
+            </div>
+        </div>
+
+        <nav aria-label="Footer" class="site-footer-links">
+            <h2 class="site-footer-col-title">Site</h2>
+            <ul class="site-footer-col-list">
+                <li><a href="#features">What it does</a></li>
+                <li><a href="#how">How it works</a></li>
+                <li><a href="#engineering">Engineering</a></li>
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer">View source ↗</a></li>
+            </ul>
+        </nav>
+    </div>
+</footer>
+
+<script>
+(function () {
+    // Footer copyright year
+    var footYear = document.getElementById('footYear');
+    if (footYear) footYear.textContent = new Date().getFullYear();
+
+    // Mobile nav toggle
+    var toggle = document.getElementById('navToggle');
+    var nav    = document.getElementById('navLinks');
+    toggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('mobile-open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            nav.classList.remove('mobile-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // Scroll-spy active nav link
+    var links = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+    var sections = links
+        .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+        .filter(Boolean);
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            var visible = entries.filter(function (e) { return e.isIntersecting; });
+            if (!visible.length) return;
+            var topMost = visible.reduce(function (a, b) {
+                return a.boundingClientRect.top < b.boundingClientRect.top ? a : b;
+            });
+            links.forEach(function (a) {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + topMost.target.id);
+            });
+        }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+
+        sections.forEach(function (s) { observer.observe(s); });
+    }
+})();
+</script>
+
+</body>
+</html>
