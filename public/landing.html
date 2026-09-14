@@ -507,9 +507,65 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
     .flow-node + .flow-node { border-top: none; }
 }
 
+/* ─── Scroll reveal ─── staggered per group rather than one uniform
+   fade-up: each grid's items step in a beat apart so the motion reads as
+   sequence, not a single animation replayed on everything. ───────────── */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].is-visible { opacity: 1; transform: none; }
+
+.flow-node:nth-child(1) { --reveal-delay: 0ms; }
+.flow-node:nth-child(2) { --reveal-delay: 90ms; }
+.flow-node:nth-child(3) { --reveal-delay: 180ms; }
+.flow-node:nth-child(4) { --reveal-delay: 270ms; }
+.flow-node:nth-child(5) { --reveal-delay: 360ms; }
+
+.bento-item.primary:nth-child(2) { --reveal-delay: 100ms; }
+.bento-sub .bento-item:nth-child(1) { --reveal-delay: 0ms; }
+.bento-sub .bento-item:nth-child(2) { --reveal-delay: 90ms; }
+.bento-sub .bento-item:nth-child(3) { --reveal-delay: 180ms; }
+
+.cite-item:nth-child(1) { --reveal-delay: 0ms; }
+.cite-item:nth-child(2) { --reveal-delay: 80ms; }
+.cite-item:nth-child(3) { --reveal-delay: 160ms; }
+.cite-item:nth-child(4) { --reveal-delay: 240ms; }
+
+.manifest-group:nth-child(1) { --reveal-delay: 0ms; }
+.manifest-group:nth-child(2) { --reveal-delay: 80ms; }
+.manifest-group:nth-child(3) { --reveal-delay: 160ms; }
+.manifest-group:nth-child(4) { --reveal-delay: 240ms; }
+
+.site-footer-links { --reveal-delay: 100ms; }
+
+/* ─── Card hover — transform/color only, no shadow or scale, matching the
+   flat bordered surfaces elsewhere on the page. ─────────────────────── */
+.flow-node { transition: background-color 0.2s ease; }
+.flow-node:hover { background: var(--surface-2); }
+
+.bento-item { transition: background-color 0.2s ease; }
+.bento-item:hover { background: var(--accent-soft); }
+
+.cite-item { transition: transform 0.2s ease, border-color 0.2s ease; }
+.cite-item:hover { transform: translateX(4px); border-color: var(--accent); }
+
+/* ─── Hero instrument — the gauge fills and the readout settles in once,
+   on load, so the "live" card doesn't sit there inert. ─────────────── */
+.gauge-fill { animation: gauge-fill 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both; }
+@keyframes gauge-fill { from { width: 0; } to { width: 62%; } }
+
+.instrument-num { animation: num-settle 0.5s ease 0.85s both; }
+@keyframes num-settle { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .wordmark .dot, .instrument-live .dot { animation: none; }
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .gauge-fill, .instrument-num { animation: none; }
+    .flow-node, .bento-item, .cite-item { transition: none; }
 }
 </style>
 </head>
@@ -534,16 +590,16 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
     <section id="top" class="band hero-band">
         <div class="hero">
             <div>
-                <div class="eyebrow">ESP32 · Load cell · Decision tree · Firestore</div>
-                <h1>A catheter bag<br>that <em>tells someone</em><br>before it's full.</h1>
-                <p class="hero-sub">INTELLICATH weighs the bag continuously with a load cell, predicts the minute it reaches capacity, and puts that number in front of a nurse before the bag has to do it for them.</p>
-                <div class="btn-row">
+                <div class="eyebrow" data-reveal style="--reveal-delay:0ms">ESP32 · Load cell · Decision tree · Firestore</div>
+                <h1 data-reveal style="--reveal-delay:80ms">A catheter bag<br>that <em>tells someone</em><br>before it's full.</h1>
+                <p class="hero-sub" data-reveal style="--reveal-delay:160ms">INTELLICATH weighs the bag continuously with a load cell, predicts the minute it reaches capacity, and puts that number in front of a nurse before the bag has to do it for them.</p>
+                <div class="btn-row" data-reveal style="--reveal-delay:240ms">
                     <a href="index.html" class="btn btn-primary">Open the dashboard</a>
                     <a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Read the source ↗</a>
                 </div>
             </div>
 
-            <div class="instrument" aria-hidden="true">
+            <div class="instrument" aria-hidden="true" data-reveal style="--reveal-delay:120ms">
                 <div class="instrument-head">
                     <span class="instrument-tag">Example reading</span>
                     <span class="instrument-live"><span class="dot"></span>Caution</span>
@@ -562,10 +618,10 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── Why this exists ─── -->
     <section class="band shade">
-        <div class="eyebrow">Why this exists</div>
+        <div class="eyebrow" data-reveal>Why this exists</div>
         <div class="problem-grid">
-            <div class="problem-lede">A full catheter bag doesn't page anyone. Someone has to walk over, look, and remember to look again.</div>
-            <div class="problem-body">
+            <div class="problem-lede" data-reveal>A full catheter bag doesn't page anyone. Someone has to walk over, look, and remember to look again.</div>
+            <div class="problem-body" data-reveal style="--reveal-delay:100ms">
                 <p>Catheter-associated urinary tract infections are one of the more preventable hospital-acquired complications, and a lot of the risk sits in the gap between checks — a bag that sat too full for too long, a blockage no one noticed until output stopped.</p>
                 <p>INTELLICATH replaces the walk-and-look with a number on a screen: a load cell under the bag, a small model that turns weight and flow into a countdown, and a dashboard that recolors before the situation does.</p>
             </div>
@@ -574,34 +630,34 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── How it works ─── -->
     <section id="how" class="band">
-        <div class="eyebrow">How it works</div>
-        <h2 class="section-title">One reading, five hops, no polling from a nurse's station required.</h2>
+        <div class="eyebrow" data-reveal>How it works</div>
+        <h2 class="section-title" data-reveal>One reading, five hops, no polling from a nurse's station required.</h2>
         <div class="flow">
-            <div class="flow-node">
+            <div class="flow-node" data-reveal>
                 <div class="flow-step">01 — SENSE</div>
                 <h4>Load cell weighs the bag</h4>
                 <p>An HX711 amplifier samples ten readings per loop under the catheter bag; weight converts directly to volume.</p>
                 <span class="flow-part">ARDUINOCODE.ino</span>
             </div>
-            <div class="flow-node">
+            <div class="flow-node" data-reveal>
                 <div class="flow-step">02 — COMPUTE</div>
                 <h4>ESP32 derives the flow rate</h4>
                 <p>Flow is recalculated on a fixed 60-second window, not an unbounded elapsed time, so a quiet period doesn't distort the rate.</p>
                 <span class="flow-part">calculateUrineFlowRate()</span>
             </div>
-            <div class="flow-node">
+            <div class="flow-node" data-reveal>
                 <div class="flow-step">03 — POST</div>
                 <h4>TLS-pinned upload</h4>
                 <p>The device validates the server's certificate against a hardcoded root CA, then posts with an API key and a device ID.</p>
                 <span class="flow-part">WiFiClientSecure</span>
             </div>
-            <div class="flow-node">
+            <div class="flow-node" data-reveal>
                 <div class="flow-step">04 — VALIDATE</div>
                 <h4>Serverless function checks it</h4>
                 <p>The key, the rate limit, and the clinical bounds (0–800 mL bag volume, 0–100 mL/min flow) are all checked before anything is stored.</p>
                 <span class="flow-part">db.py</span>
             </div>
-            <div class="flow-node">
+            <div class="flow-node" data-reveal>
                 <div class="flow-step">05 — PREDICT</div>
                 <h4>Decision tree, then dashboard</h4>
                 <p>A scikit-learn regressor turns remaining volume and flow rate into minutes-to-full; the dashboard renders the countdown and fires alerts.</p>
@@ -612,29 +668,29 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── Features ─── -->
     <section id="features" class="band shade">
-        <div class="eyebrow">What it does</div>
-        <h2 class="section-title">Built around two jobs — sense accurately, predict honestly.</h2>
+        <div class="eyebrow" data-reveal>What it does</div>
+        <h2 class="section-title" data-reveal>Built around two jobs — sense accurately, predict honestly.</h2>
         <div class="bento">
-            <div class="bento-item primary">
+            <div class="bento-item primary" data-reveal>
                 <h3>Continuous weight sensing, not spot checks</h3>
                 <p>The load cell samples every loop of the device's firmware. Urine output and flow rate are measured directly from bag weight, not estimated from a nurse's last visual check.</p>
                 <span class="mono-tag">HX711 · 10-sample average</span>
             </div>
-            <div class="bento-item primary">
+            <div class="bento-item primary" data-reveal>
                 <h3>A trained countdown, not a guess</h3>
                 <p>A decision tree regression model predicts minutes until the bag reaches 800 mL from remaining volume and current flow rate — retrained offline, hash-verified before it's ever loaded.</p>
                 <span class="mono-tag">scikit-learn · joblib</span>
             </div>
             <div class="bento-sub">
-                <div class="bento-item">
+                <div class="bento-item" data-reveal>
                     <h4>Alerts you can tune</h4>
                     <p>Warn threshold and refresh interval are editable per session and saved to <code>localStorage</code>, not hardcoded into the page.</p>
                 </div>
-                <div class="bento-item">
+                <div class="bento-item" data-reveal>
                     <h4>Tells you when it's lying</h4>
                     <p>If the last successful reading is more than 30 seconds old, the timestamp turns amber and counts up instead of quietly going stale.</p>
                 </div>
-                <div class="bento-item">
+                <div class="bento-item" data-reveal>
                     <h4>Usable with a keyboard</h4>
                     <p>Every alert toggle carries a visible focus ring, the sidebar announces its own expanded state, and toasts are built from real DOM nodes.</p>
                 </div>
@@ -644,25 +700,25 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── Engineering ─── -->
     <section id="engineering" class="band">
-        <div class="eyebrow">Engineering</div>
-        <h2 class="section-title">The parts that don't show up on the dashboard.</h2>
+        <div class="eyebrow" data-reveal>Engineering</div>
+        <h2 class="section-title" data-reveal>The parts that don't show up on the dashboard.</h2>
         <div class="cite-list">
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Hashes the model before it's allowed to run</h4>
                 <p>Loading a pickle is arbitrary code execution if the file was ever swapped. <code class="mono">get_model()</code> checks a SHA-256 of both <code class="mono">decision_tree.pkl</code> and <code class="mono">scaler.pkl</code> against env-stored hashes before <code class="mono">joblib.load()</code> touches either.</p>
                 <code>db.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>One validator, three callers</h4>
                 <p><code class="mono">api/predict.py</code>, <code class="mono">api/data.py</code>, and the local Flask app all import the same <code class="mono">validate_sensor_data</code> — type coercion plus clinical range bounds, instead of three copies quietly drifting apart.</p>
                 <code>db.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Skips the write when nothing changed</h4>
                 <p><code class="mono">save_data_to_firestore</code> compares the incoming reading against the last stored document and drops the insert when volume, flow, and output are all within noise tolerance.</p>
                 <code>db.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Pinned TLS on the sensor itself</h4>
                 <p>The ESP32 validates the server's certificate against a hardcoded ISRG Root X1 before it ever sends a reading — <code class="mono">WiFiClientSecure</code>, not a bare <code class="mono">HTTPClient</code> trusting whatever answers.</p>
                 <code>ARDUINOCODE.ino</code>
@@ -672,25 +728,25 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── Security ─── -->
     <section id="security" class="band shade">
-        <div class="eyebrow">Security</div>
-        <h2 class="section-title">Every hop between the sensor and the screen is checked.</h2>
+        <div class="eyebrow" data-reveal>Security</div>
+        <h2 class="section-title" data-reveal>Every hop between the sensor and the screen is checked.</h2>
         <div class="cite-list">
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Every request carries a key</h4>
                 <p><code class="mono">X-Api-Key</code> is checked on both API routes; the ESP32 attaches <code class="mono">X-Device-Id</code> alongside it so a stored reading is attributable to a specific unit.</p>
                 <code>db.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Errors don't narrate the stack</h4>
                 <p>A failed request returns a flat "an internal error occurred." The real exception, with <code class="mono">exc_info=True</code>, goes to the server log — never to the client that triggered it.</p>
                 <code>app.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>Rate-limited per IP</h4>
                 <p><code class="mono">check_rate_limit</code> rejects a second request from the same address inside a one-second window — a stopgap against a flooded endpoint filling Firestore with garbage.</p>
                 <code>db.py</code>
             </div>
-            <div class="cite-item">
+            <div class="cite-item" data-reveal>
                 <h4>No HTML in, HTML out</h4>
                 <p>The toast notification system builds every node with <code class="mono">createElement</code> and <code class="mono">textContent</code>. Nothing a server response contains is ever parsed as markup.</p>
                 <code>index.html</code>
@@ -700,10 +756,10 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
     <!-- ─── Stack manifest ─── -->
     <section class="band">
-        <div class="eyebrow">Stack</div>
-        <h2 class="section-title">Bill of materials.</h2>
+        <div class="eyebrow" data-reveal>Stack</div>
+        <h2 class="section-title" data-reveal>Bill of materials.</h2>
         <div class="manifest">
-            <div class="manifest-group">
+            <div class="manifest-group" data-reveal>
                 <div class="manifest-label">Hardware</div>
                 <ul>
                     <li>ESP32 dev board <span class="tag">WiFi + TLS</span></li>
@@ -711,7 +767,7 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
                     <li>On-chip EEPROM <span class="tag">state persistence</span></li>
                 </ul>
             </div>
-            <div class="manifest-group">
+            <div class="manifest-group" data-reveal>
                 <div class="manifest-label">Backend</div>
                 <ul>
                     <li>Python 3.9 <span class="tag">Flask, local</span></li>
@@ -719,7 +775,7 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
                     <li>google-cloud-firestore <span class="tag">SDK</span></li>
                 </ul>
             </div>
-            <div class="manifest-group">
+            <div class="manifest-group" data-reveal>
                 <div class="manifest-label">Model</div>
                 <ul>
                     <li>Decision tree regression <span class="tag">scikit-learn</span></li>
@@ -727,7 +783,7 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
                     <li>Inputs <span class="tag">volume + flow</span></li>
                 </ul>
             </div>
-            <div class="manifest-group">
+            <div class="manifest-group" data-reveal>
                 <div class="manifest-label">Frontend</div>
                 <ul>
                     <li>Vanilla HTML / CSS / JS <span class="tag">no framework</span></li>
@@ -741,8 +797,8 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
     <!-- ─── Final CTA ─── -->
     <section class="band last">
         <div class="final-cta">
-            <h2>See the number update.</h2>
-            <div class="btn-row" style="margin-top:0;">
+            <h2 data-reveal>See the number update.</h2>
+            <div class="btn-row" data-reveal style="margin-top:0; --reveal-delay:100ms">
                 <a href="index.html" class="btn btn-primary">Open the dashboard</a>
                 <a href="https://github.com/jabluetooth/intellicath" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Read the source ↗</a>
             </div>
@@ -752,7 +808,7 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
 
 <footer class="site-footer">
     <div class="site-footer-inner shell">
-        <div class="site-footer-brand">
+        <div class="site-footer-brand" data-reveal>
             <span class="site-footer-wordmark"><span class="dot"></span>INTELLICATH</span>
 
             <div class="site-footer-brand-foot">
@@ -777,7 +833,7 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
             </div>
         </div>
 
-        <nav aria-label="Footer" class="site-footer-links">
+        <nav aria-label="Footer" class="site-footer-links" data-reveal>
             <h2 class="site-footer-col-title">Site</h2>
             <ul class="site-footer-col-list">
                 <li><a href="#features">What it does</a></li>
@@ -795,6 +851,24 @@ nav.links a.nav-link:focus-visible { outline: 2px solid var(--accent); outline-o
     // Footer copyright year
     var footYear = document.getElementById('footYear');
     if (footYear) footYear.textContent = new Date().getFullYear();
+
+    // Scroll-reveal — each [data-reveal] element fades/slides in once,
+    // the first time it crosses into view (staggered per-group via CSS).
+    var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    } else {
+        var revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        revealEls.forEach(function (el) { revealObserver.observe(el); });
+    }
 
     // Mobile nav toggle
     var toggle = document.getElementById('navToggle');
